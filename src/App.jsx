@@ -3,8 +3,6 @@ import qubystanding from '../public/qubystanding.png';
 import qubythankyou from '../public/qubythankyou.gif';
 import qubysad2 from '../public/qubysad2.gif';
 import qubysad1 from '../public/qubysad1.png';
-
-
 // --- Constants ---
 const PLAYER_WIDTH = 50;
 const PLAYER_HEIGHT = 50;
@@ -29,7 +27,6 @@ const ParallaxBackground = ({ playerX }) => {
     const layer3Style = { backgroundPosition: `${-playerX / 2}px 0` };
 
     return (
-      
         <div className="parallax-background">
             <div className="parallax-layer" style={{ ...layer1Style, backgroundImage: "url('https://i.imgur.com/6BGE63g.png')", backgroundSize: '150% 100%' }}></div>
             <div className="parallax-layer" style={{ ...layer2Style, backgroundImage: "url('https://i.imgur.com/c3aQ0l2.png')", opacity: 0.8, backgroundSize: '150% 100%' }}></div>
@@ -105,6 +102,20 @@ const RoundIndicator = ({ roundNumber, currentLevel }) => {
         <div className="main">
             <span className="webdev">Round</span>
             <span className="socod">{displayRound}</span>
+        </div>
+    );
+};
+
+const LevelTransitionScreen = ({ onContinue }) => {
+    useEffect(() => {
+        const timer = setTimeout(onContinue, 4000); // Wait 3 seconds
+        return () => clearTimeout(timer);
+    }, [onContinue]);
+
+    return (
+        <div className="level-transition-screen">
+            <h2 style={{color:'black', fontWeight: 600, fontSize:18}}>You Won Level 1</h2>
+            <p style={{color:'black', fontSize:16}}>Starting Level 2</p>
         </div>
     );
 };
@@ -385,13 +396,18 @@ export default function App() {
         });
     }, []);
 
+    const proceedToNextLevel = useCallback(() => {
+        setCurrentLevel(2);
+        setLives(INITIAL_LIVES);
+        setTimer(GAME_TIME_SECONDS);
+        setGameState('playing');
+        setResetLevel(true);
+        setTimeout(() => setResetLevel(false), 100);
+    }, []);
+
     const handleLevelComplete = useCallback(() => {
         if (currentLevel === 1) {
-            setCurrentLevel(2);
-            setLives(INITIAL_LIVES); 
-            setTimer(GAME_TIME_SECONDS); 
-            setResetLevel(true);
-            setTimeout(() => setResetLevel(false), 100);
+            setGameState('level-transition');
         } else {
             setGameState('won');
         }
@@ -429,7 +445,11 @@ export default function App() {
                     @media (min-width: 768px) { .touch-controls { display: none; } }
                     .touch-button { padding: 1rem; background-color: #6B7280; color: white; border-radius: 9999px; border: none; margin-right: 1rem; }
                     .jump-button { padding: 1.5rem; background-color: #3B82F6; }
-                    .game-over-screen { position: absolute; top: 0; right: 0; bottom: 0; left: 0; background-color: #ffffff; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 30; }
+                    .game-over-screen, .level-transition-screen { position: absolute; top: 0; right: 0; bottom: 0; left: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 30; }
+                    .game-over-screen { background-color: #ffffff; }
+                    .level-transition-screen { background-color: rgba(255, 255, 255, 0.85); color: white; font-family: 'neontubes', sans-serif; text-align: center; }
+                    .level-transition-text { font-size: 4rem; color: #22C55E; text-shadow: 0 0 15px #22C55E, 0 0 5px #fff; margin: 0; }
+                    .level-transition-subtext { font-size: 2rem; color: #d4eaff; text-shadow: 0 0 10px #2695ff, 0 0 2px #fff; }
                     .game-over-text { font-size: 3.75rem; line-height: 1; font-weight: bold; color: white; margin-bottom: 1rem; }
                     .restart-button { padding: 1rem 2rem; background-color: #000000ff; color: white; font-weight: bold; border-radius: 0.5rem; font-size: 1.5rem; line-height: 2rem; border: none; cursor: pointer; transition: background-color 150ms ease-in-out; }
                     .restart-button:hover { background-color: #000000ff; }
@@ -459,7 +479,10 @@ export default function App() {
                         <ActiveLevel onLevelComplete={handleLevelComplete} onPlayerDeath={handlePlayerDeath} shouldReset={resetLevel} />
                     </>
                 )}
-                {gameState !== 'playing' && (
+                {gameState === 'level-transition' && (
+                    <LevelTransitionScreen onContinue={proceedToNextLevel} />
+                )}
+                {gameState !== 'playing' && gameState !== 'level-transition' && (
                     <div className="game-over-screen">
                         <h2 className="game-over-text">
                             {gameState === 'won' ? <span style={{ display: 'flex', flexDirection: 'column' }}> <span style={{color:'black'}}>You Win</span>
