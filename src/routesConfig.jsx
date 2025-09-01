@@ -2,12 +2,16 @@ import Eyetest from './component/eyetest/Eyetest';
 import SaveQuby from './component/savequby/SaveQuby';
 import App from './App';
 import Home from './Home';
+import qubynade from './assets/qubynade.webp';
+import qubyeyetest from './assets/qubyeyetest.webp';
+
 
 
 const routes = [
     {
         path: '/',
         element: <Home />,
+       
     },
     {
         path: '/home',
@@ -16,10 +20,12 @@ const routes = [
     {
         path: '/savequby',
         element: <SaveQuby />,
+         img: qubynade
     },
    {
         path: '/eyetest',
         element: <Eyetest />,
+         img: qubyeyetest
     },
    
     // {

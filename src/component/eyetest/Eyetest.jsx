@@ -11,24 +11,33 @@ export default function ColorGame() {
   const [modalType, setModalType] = useState(null); // 'win' or 'timeout'
   const [showRulesModal, setShowRulesModal] = useState(true);
   const [gameStarted, setGameStarted] = useState(false);
-  const [initialTime, setInitialTime] = useState(20);
-  const [timeLeft, setTimeLeft] = useState(10); // ✅ manage timer manually
+  const [timeLeft, setTimeLeft] = useState(10);
 
   const levelSettings = useMemo(() => ({
-  1: { size: 3, time: 5, colorDiff: 50 },
-  2: { size: 5, time: 5, colorDiff: 25 },
-  3: { size: 7, time: 7, colorDiff: 10 },
-  4: { size: 7, time: 7, colorDiff: 10 },
-  5: { size: 7, time: 7, colorDiff: 10 },
-}), []);
+    1: { size: 3, time: 5, colorDiff: 50 },
+    2: { size: 5, time: 5, colorDiff: 25 },
+    3: { size: 7, time: 7, colorDiff: 10 },
+    4: { size: 7, time: 7, colorDiff: 10 },
+    5: { size: 7, time: 7, colorDiff: 10 },
+  }), []);
 
   const rules = useMemo(() => [
     "Find the color that's a little different from the others.",
     "You have a time limit for each level.",
     "Pick the right color to go to the next level.",
     "Finish all 5 levels to win.",
-    "Have fun and good luck!",
+    "Missed a level? Don't stress, we'll give you feedback.",
   ], []);
+
+const failureMessages = useMemo(() => ({
+  1: "Just warming up — take your time. 👀",
+  2: "Getting trickier! Step away from the screen for a bit. ⏸️",
+  3: "Your eyes might be tired — be sure to rest and get good sleep daily. 🛌",
+  4: "Close one! Stay hydrated and avoid screens before bed.",
+  5: "You’ve come far! Take care of your eyes and body — exercise and eat well. 🍎🧘‍♂️",
+}), []);
+
+
 
   const randomColor = useCallback(() => {
     const r = Math.floor(Math.random() * 200);
@@ -51,21 +60,21 @@ export default function ColorGame() {
 
     setTarget(targetIndex);
     setGrid(newGrid);
-    setInitialTime(levelSettings[level].time);
-    setTimeLeft(levelSettings[level].time); // ✅ reset timer
+    setTimeLeft(levelSettings[level].time);
   }, [level, levelSettings, randomColor]);
 
-  // ✅ Timer effect (replacing useTimer)
   useEffect(() => {
     if (!gameStarted) return;
 
-    setTimeLeft(levelSettings[level].time); // reset time
+    setTimeLeft(levelSettings[level].time);
+
     const interval = setInterval(() => {
       setTimeLeft(prev => {
         if (prev <= 1) {
           clearInterval(interval);
           setModalType("timeout");
           setIsModalOpen(true);
+          setGameStarted(false); // Stop the game
           return 0;
         }
         return prev - 1;
@@ -92,6 +101,7 @@ export default function ColorGame() {
           setMessage("");
         }, 1000);
       } else {
+        setGameStarted(false); // Stop the timer and game
         setModalType("win");
         setIsModalOpen(true);
       }
@@ -101,21 +111,20 @@ export default function ColorGame() {
   }, [gameStarted, target, level]);
 
   const handleCloseModal = useCallback(() => {
-    window.history.back(); // or navigate away
+    window.history.back();
   }, []);
 
   const handleRetry = useCallback(() => {
     setIsModalOpen(false);
     setModalType(null);
     setMessage("");
-    setupGrid();
-  }, [setupGrid]);
+    setLevel(1);
+    setGameStarted(true);
+  }, []);
 
   const handleStartGame = useCallback(() => {
     setShowRulesModal(false);
     setGameStarted(true);
-    setIsModalOpen(false);
-    setModalType(null);
   }, []);
 
   const gridStyle = useMemo(() => ({
@@ -157,18 +166,20 @@ export default function ColorGame() {
           Start
         </button>
       </Modal>
-
-      {/* Win or Timeout Modal */}
+     
       <Modal
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         title={modalType === "win" ? "🎉 Congratulations!" : "⏳ Time’s up!"}
       >
         {modalType === "timeout" && (
-          <div className="modal-actions">
-            <button onClick={handleRetry}>🔁 Retry</button>
-            <button onClick={handleCloseModal}>❌ Exit Game</button>
-          </div>
+          <>
+            <p>{failureMessages[level]}</p>
+            <div className="modal-actions">
+              <button onClick={handleRetry}>🔁 Retry</button>
+              <button onClick={handleCloseModal}>❌ Exit Game</button>
+            </div>
+          </>
         )}
         {modalType === "win" && (
           <p>You won! Your eyesight is seriously impressive. You’ve got a sharp eye!</p>
