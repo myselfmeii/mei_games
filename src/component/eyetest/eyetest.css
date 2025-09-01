@@ -1,0 +1,27 @@
+.game {
+  text-align: center;
+  margin-top: 30px;
+}
+
+.grid {
+  display: grid;
+  gap: 8px;
+  justify-content: center;
+  margin: 20px auto;
+}
+
+.cell {
+  width: 60px;
+  height: 60px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.cell:hover {
+  transform: scale(1.1);
+}
+
+.devil {
+  color: red;
+}
