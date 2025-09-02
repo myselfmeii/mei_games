@@ -155,7 +155,12 @@ const RulesScreen = ({ onStartGame }) => {
                 >
                     <li>There are no certain rules. We don’t know what’s coming next.just like your life.</li>
                     <li>You get 2 lives to play. Try not to waste them... there are 3 levels to survive.</li>
+                    <li className="rules-quote">
+  🎮 Controls: Use ⬆️ Up Arrow or 🔼 Spacebar to jump, ⬅️ Left Arrow to move left, and ➡️ Right Arrow to move right. Have fun!
+</li>
+
                 </ul>
+                
 
 
                 <span style={{ display: 'flex', justifyContent: 'center', gap: '15px' }} >
