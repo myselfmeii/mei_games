@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import Modal from "../common/Modal";
 import "./eyetest.css";
+import CopyLinkButton from "../common/CopyLinkButton";
 
 export default function ColorGame() {
   const [level, setLevel] = useState(1);
@@ -163,7 +164,7 @@ const failureMessages = useMemo(() => ({
           ))}
         </ul>
         <button className="start-button" onClick={handleStartGame}>
-          Start
+          Start Game
         </button>
       </Modal>
      
@@ -181,8 +182,10 @@ const failureMessages = useMemo(() => ({
             </div>
           </>
         )}
-        {modalType === "win" && (
+        {modalType === "win" && (<>
           <p>You won! Your eyesight is seriously impressive. You’ve got a sharp eye!</p>
+          <CopyLinkButton buttonText="Dare a Friend" style={{ backgroundColor: 'orange', padding: 5, color: 'black', fontWeight: 'bold', borderRadius: '0.5rem', fontSize: 18, border: 'none', cursor: 'pointer', transition: 'background-color 150ms ease-in-out', height:45, width:150 }} />
+          </>
         )}
       </Modal>
     </div>
