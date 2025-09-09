@@ -44,11 +44,10 @@ const Home = () => {
               fontWeight: '600',
               fontSize: '18px',
               textAlign: 'center',
-              // backgroundColor: '#f9f9f9',
-              backgroundImage: `url(${routes.find(route => route.path === path)?.img})`,
+                          backgroundImage: `url(${routes.find(route => route.path === path)?.img})`,
               cursor: 'pointer',
               transition: 'transform 0.2s',
-              backgroundSize: 'contain', // optional if you want it to fit instead of cover
+              backgroundSize: 'contain', 
               backgroundPosition: 'right center',
               backgroundRepeat: 'no-repeat',
               transition: 'background-image 0.3s ease-in-out',
@@ -60,7 +59,8 @@ const Home = () => {
             tabIndex={0}
             onKeyDown={(e) => e.key === 'Enter' && handleNavigate(path)}
           >
-            {path.replace('/', '').toUpperCase()}
+            {/* {path.replace('/', '').toUpperCase()} */}
+             {path === "/npat/*" ? "Name Game" : path.replace('/', '').toUpperCase()}
           </div>
         ))}
       </div>
