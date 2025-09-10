@@ -12,6 +12,10 @@ export function gameReducer(state, action) {
             return { ...initialGameState, scores: Array(action.payload.playerCount).fill(0) };
         case 'DRAW_LINE': {
             const { newLink, createdSquares, players, gridSize } = action.payload;
+
+            // --- CHECKPOINT 5 ---
+            console.log(`%cCheckpoint 5: Reducer received DRAW_LINE. Found ${createdSquares.length} square(s).`, "color: orange; font-weight: bold;");
+            
             const newLinks = new Map(state.links);
             newLinks.set(newLink.key, newLink.data);
 
@@ -19,8 +23,10 @@ export function gameReducer(state, action) {
             let nextTurn = state.turn;
             if (createdSquares.length > 0) {
                 newScores[state.turn] += createdSquares.length;
+                console.log(`%cScore updated for player ${state.turn}. New score: ${newScores[state.turn]}. Player gets another turn.`, "color: orange;");
             } else {
                 nextTurn = (state.turn + 1) % players.length;
+                console.log(`%cNo score. Advancing to next player: ${nextTurn}.`, "color: orange;");
             }
 
             const newSquaresArray = [...state.squares, ...createdSquares];
@@ -35,6 +41,6 @@ export function gameReducer(state, action) {
             return { ...state, links: newLinks, squares: newSquaresArray, scores: newScores, turn: nextTurn, winner: newWinner };
         }
         default:
-             throw new Error(`Unknown action type: ${action.type}`);
+            throw new Error();
     }
 }
