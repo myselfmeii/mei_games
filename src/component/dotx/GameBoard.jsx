@@ -17,11 +17,11 @@ const GameBoard = () => {
     
     const eventLogicRef = useRef();
     useEffect(() => {
-        eventLogicRef.current = { gameState, players, gridSize, gameDispatch, dots: logicStateRef.current.dots };
+        eventLogicRef.current = { gameState, players, gridSize, gameDispatch, dotsMap: logicStateRef.current.dotsMap };
     }, [gameState, players, gridSize, gameDispatch, logicStateRef]);
 
-    const checkForSquare = useCallback((link, currentLinks, currentTurn) => {
-        const { dots } = logicStateRef.current;
+    const checkForSquare = useCallback((link, currentLinks) => {
+        const { dotsMap } = logicStateRef.current;
         const newSquares = [];
         const findLink = (dot1, dot2) => currentLinks.has(getLineKey(dot1, dot2));
         
@@ -29,46 +29,45 @@ const GameBoard = () => {
         const start = (us.gy < ue.gy || (us.gy === ue.gy && us.gx < ue.gx)) ? us : ue;
         const end = (us.gy < ue.gy || (us.gy === ue.gy && us.gx < ue.gx)) ? ue : us;
         
-        const squareColor = players[currentTurn].color;
+        const squareColor = eventLogicRef.current.players[eventLogicRef.current.gameState.turn].color;
 
-        if (start.gy === end.gy) {
-            if (start.gy > 0) {
-                const d1 = dots.find(d => d.gx === start.gx && d.gy === start.gy - 1);
-                const d2 = dots.find(d => d.gx === end.gx && d.gy === end.gy - 1);
+        if (start.gy === end.gy) { 
+            if (start.gy > 0) { 
+                const d1 = dotsMap.get(`${start.gx},${start.gy - 1}`);
+                const d2 = dotsMap.get(`${end.gx},${end.gy - 1}`);
                 if (d1 && d2 && findLink(d1, start) && findLink(d2, end) && findLink(d1, d2)) {
                     newSquares.push({ x: d1.x, y: d1.y, color: squareColor });
                 }
             }
-        
-            if (start.gy < gridSize - 1) {
-                const d1 = dots.find(d => d.gx === start.gx && d.gy === start.gy + 1);
-                const d2 = dots.find(d => d.gx === end.gx && d.gy === end.gy + 1);
+            if (start.gy < gridSize - 1) { 
+                const d1 = dotsMap.get(`${start.gx},${start.gy + 1}`);
+                const d2 = dotsMap.get(`${end.gx},${end.gy + 1}`);
                 if (d1 && d2 && findLink(start, d1) && findLink(end, d2) && findLink(d1, d2)) {
                     newSquares.push({ x: start.x, y: start.y, color: squareColor });
                 }
             }
         } else { 
-           
-            if (start.gx > 0) {
-                const d1 = dots.find(d => d.gx === start.gx - 1 && d.gy === start.gy);
-                const d2 = dots.find(d => d.gx === end.gx - 1 && d.gy === end.gy);
+            if (start.gx > 0) { 
+                const d1 = dotsMap.get(`${start.gx - 1},${start.gy}`);
+                const d2 = dotsMap.get(`${end.gx - 1},${end.gy}`);
                 if (d1 && d2 && findLink(d1, start) && findLink(d2, end) && findLink(d1, d2)) {
                     newSquares.push({ x: d1.x, y: d1.y, color: squareColor });
                 }
             }
-            if (start.gx < gridSize - 1) {
-                const d1 = dots.find(d => d.gx === start.gx + 1 && d.gy === start.gy);
-                const d2 = dots.find(d => d.gx === end.gx + 1 && d.gy === end.gy);
+            if (start.gx < gridSize - 1) { 
+                const d1 = dotsMap.get(`${start.gx + 1},${start.gy}`);
+                const d2 = dotsMap.get(`${end.gx + 1},${end.gy}`);
                 if (d1 && d2 && findLink(start, d1) && findLink(end, d2) && findLink(d1, d2)) {
                     newSquares.push({ x: start.x, y: start.y, color: squareColor });
                 }
             }
         }
         return newSquares;
-    }, [gridSize, players]); 
+    }, [gridSize]);
 
     const handleMouseDown = useCallback((e) => {
-        const { gameState, players, gridSize, gameDispatch, dots } = eventLogicRef.current;
+        const { gameState, players, gridSize, gameDispatch } = eventLogicRef.current;
+        const { dots } = logicStateRef.current; 
         if (gameState.winner) return;
 
         const canvas = canvasRef.current;
@@ -90,11 +89,10 @@ const GameBoard = () => {
 
                     if (startDot !== endDot && isAdjacent && !gameState.links.has(lineKey)) {
                         const newLinkData = { start: startDot, end: endDot, color: players[gameState.turn].color };
-                       
                         const tempLinks = new Map(gameState.links);
                         tempLinks.set(lineKey, newLinkData);
                         
-                        const createdSquares = checkForSquare(newLinkData, tempLinks, gameState.turn);
+                        const createdSquares = checkForSquare(newLinkData, tempLinks);
                         
                         gameDispatch({ type: 'DRAW_LINE', payload: { newLink: { key: lineKey, data: newLinkData }, createdSquares, players, gridSize } });
                     }
@@ -104,10 +102,11 @@ const GameBoard = () => {
                 break;
             }
         }
-    }, [checkForSquare]); 
+    }, [checkForSquare]);
 
     const handleMouseMove = useCallback((e) => {
         const canvas = canvasRef.current;
+        if (!canvas) return;
         const rect = canvas.getBoundingClientRect();
         const scaleX = canvas.width / rect.width;
         const scaleY = canvas.height / rect.height;

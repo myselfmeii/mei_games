@@ -3,7 +3,12 @@ import { DOT_RADIUS, DOT_SPACING, MOUSE_DISTANCE } from './constants';
 
 export function useGameCanvas({ canvasRef, gridSize, players, gameState }) {
     const { links, squares, turn } = gameState;
-    const logicStateRef = useRef({ dots: [], originDot: null, mouse: { x: undefined, y: undefined } });
+    const logicStateRef = useRef({ 
+        dots: [], 
+        dotsMap: new Map(), 
+        originDot: null, 
+        mouse: { x: undefined, y: undefined } 
+    });
 
     const drawStateRef = useRef({ links, squares, players, turn });
     useEffect(() => {
@@ -16,17 +21,24 @@ export function useGameCanvas({ canvasRef, gridSize, players, gameState }) {
         const size = (gridSize - 1) * DOT_SPACING + DOT_SPACING;
         canvas.width = size;
         canvas.height = size;
+
         const tempDots = [];
+        const tempDotsMap = new Map();
+
         for (let gy = 0; gy < gridSize; gy++) {
             for (let gx = 0; gx < gridSize; gx++) {
-                tempDots.push({
+                const dot = {
                     x: gx * DOT_SPACING + DOT_SPACING / 2,
                     y: gy * DOT_SPACING + DOT_SPACING / 2,
                     radius: DOT_RADIUS, gx, gy,
-                });
+                };
+                tempDots.push(dot);
+                tempDotsMap.set(`${gx},${gy}`, dot);
             }
         }
         logicStateRef.current.dots = tempDots;
+        logicStateRef.current.dotsMap = tempDotsMap;
+
     }, [gridSize, canvasRef]);
 
 
@@ -43,20 +55,16 @@ export function useGameCanvas({ canvasRef, gridSize, players, gameState }) {
             const { dots, originDot, mouse } = logicStateRef.current;
 
             squares.forEach(s => {
-                ctx.fillStyle = s.color;
-                ctx.globalAlpha = 0.5;
+                ctx.fillStyle = s.color; ctx.globalAlpha = 0.5;
                 ctx.fillRect(s.x, s.y, DOT_SPACING, DOT_SPACING);
                 ctx.globalAlpha = 1.0;
             });
-            
             links.forEach(link => {
                 ctx.beginPath(); ctx.lineWidth = 5; ctx.moveTo(link.start.x, link.start.y); ctx.lineTo(link.end.x, link.end.y); ctx.strokeStyle = link.color; ctx.stroke();
             });
-
             if (originDot) {
                 ctx.beginPath(); ctx.lineWidth = 5; ctx.moveTo(originDot.x, originDot.y); ctx.lineTo(mouse.x, mouse.y); ctx.strokeStyle = players[turn].color; ctx.stroke();
             }
-
             dots.forEach(dot => {
                 ctx.beginPath();
                 const isHovered = (mouse.x - dot.x < MOUSE_DISTANCE && mouse.x - dot.x > -MOUSE_DISTANCE && mouse.y - dot.y < MOUSE_DISTANCE && mouse.y - dot.y > -MOUSE_DISTANCE);
@@ -67,7 +75,7 @@ export function useGameCanvas({ canvasRef, gridSize, players, gameState }) {
 
         animate();
         return () => cancelAnimationFrame(animationFrameId);
-    }, [canvasRef]); 
+    }, [canvasRef]);
 
-    return logicStateRef; 
+    return logicStateRef;
 }
