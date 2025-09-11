@@ -1,0 +1,117 @@
+.resume-container {
+  max-width: 700px;
+  margin: 2rem auto;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #000;
+  padding: 0 1rem;
+  position: relative;
+}
+
+/* Header container for name and designation (top visible part) */
+.resume-header {
+  text-align: center;
+  margin-bottom: 0;
+  position: relative;
+  z-index: 10;
+}
+
+.resume-header h1 {
+  font-size: 2.8rem;
+  margin-bottom: 0.3rem;
+}
+
+/* Designation style */
+.designation {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #000;
+  margin-bottom: 1.2rem;
+}
+
+/* Contact details blurred with 2px */
+.blurred-contact {
+  filter: blur(2px);
+  user-select: none;
+  pointer-events: none;
+  margin-bottom: 1.5rem;
+}
+
+.contact-details p {
+  font-size: 1rem;
+  margin: 0;
+}
+
+/* Container for 6px blurred content + gradient overlay */
+.blurred-content-wrapper {
+  position: relative;
+  filter: blur(6px);
+  user-select: none;
+  pointer-events: none;
+  color: #000;
+}
+
+/* Gradient overlay on top of blurred content */
+.blur-gradient-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 15;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0) 12%,
+    /* transparent top */ rgba(255, 255, 255, 0.3) 10%,
+    /* mild fade */ rgba(240, 240, 240, 0.6) 10%,
+    /* stronger */ rgba(255, 255, 255, 0.85) 100% /* near opaque bottom */
+  );
+}
+
+.resume-section {
+  margin-bottom: 2rem;
+}
+
+.resume-section h2 {
+  font-weight: 700;
+  margin-bottom: 0.6rem;
+  font-size: 1.3rem;
+}
+
+.exit-button {
+  padding: 0.6rem 1.5rem;
+  font-size: 1rem;
+  background-color: #f03e3e;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+}
+
+.exit-button:hover {
+  background-color: #c92a2a;
+}
+
+.blur-overlay {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-weight: 700;
+  font-size: 2rem;
+  color: black;
+  user-select: none;
+  pointer-events: none;
+  z-index: 20;
+  white-space: nowrap;
+}
+
+.blur-overlay-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  pointer-events: auto;
+}

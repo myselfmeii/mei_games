@@ -10,6 +10,7 @@ const Eyetest = lazy(() => import('./component/eyetest/Eyetest'));
 const NPAT = lazy(() => import('./component/npat/NPAT'));
 const Dotx = lazy(() => import('./component/dotx/Dotx'));
 const SongGame = lazy(() => import('./component/songgame/SongGame'));
+const Resume = lazy(() => import('./component/resume/Resume'));
 
 const routes = [
   {
@@ -34,6 +35,11 @@ const routes = [
     path: '/songgame',
     element: <SongGame />,
     img: qubysong,
+  },
+  {
+    path: '/getintouch',
+    element: <Resume />,
+    // img: qubythumbsup,
   },
   // {
   //   path: '/dotsnbox',
