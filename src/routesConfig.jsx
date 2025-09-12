@@ -3,7 +3,7 @@ import qubynade from './assets/qubynade.webp';
 import qubyeyetest from './assets/qubyeyetest.webp';
 import qubythumbsup from './assets/qubythumbsup.gif';
 import qubysong from './assets/qubysong.gif'
-import InnerVoice from './component/innervoice/Innervoice';
+import InnerVoice from './component/innervoice/InnerVoice';
 import qubyno from './assets/qubyno.gif';
 
 const Home = lazy(() => import('./Home'));
