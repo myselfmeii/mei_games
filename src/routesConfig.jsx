@@ -3,7 +3,6 @@ import qubynade from './assets/qubynade.webp';
 import qubyeyetest from './assets/qubyeyetest.webp';
 import qubythumbsup from './assets/qubythumbsup.gif';
 import qubysong from './assets/qubysong.gif'
-import InnerVoice from './component/innervoice/InnerVoice';
 import qubyno from './assets/qubyno.gif';
 
 const Home = lazy(() => import('./Home'));
@@ -13,6 +12,8 @@ const NPAT = lazy(() => import('./component/npat/NPAT'));
 const Dotx = lazy(() => import('./component/dotx/Dotx'));
 const SongGame = lazy(() => import('./component/songgame/SongGame'));
 const Resume = lazy(() => import('./component/resume/Resume'));
+const InnerVoice = lazy(() => import('./component/innervoice/InnerVoice'));
+
 
 const routes = [
   {
