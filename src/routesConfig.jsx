@@ -3,6 +3,8 @@ import qubynade from './assets/qubynade.webp';
 import qubyeyetest from './assets/qubyeyetest.webp';
 import qubythumbsup from './assets/qubythumbsup.gif';
 import qubysong from './assets/qubysong.gif'
+import InnerVoice from './component/innervoice/Innervoice';
+import qubyno from './assets/qubyno.gif';
 
 const Home = lazy(() => import('./Home'));
 const SaveQuby = lazy(() => import('./component/savequby/SaveQuby'));
@@ -35,6 +37,11 @@ const routes = [
     path: '/songgame',
     element: <SongGame />,
     img: qubysong,
+  },
+    {
+    path: '/innervoice',
+    element: <InnerVoice />,
+    img: qubyno,
   },
   {
     path: '/getintouch',
